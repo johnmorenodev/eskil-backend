@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const indexRoutes = require('./routes/indexRoutes');
+const productRoutes = require('./routes/productsRoutes');
 
 app.use(express.json());
 
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 });
 
 app.use(indexRoutes);
+app.use(productRoutes);
 
 mongoose
   .connect(process.env.DB_URL)

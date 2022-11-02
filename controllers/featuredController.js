@@ -1,10 +1,12 @@
-const Featured = require('../models/indexPage/featured');
+const Product = require('../models/productModel');
 
 exports.getFeaturedProducts = async (req, res) => {
   try {
-    const featuredProducts = await Featured.find({}).exec();
-    console.log(featuredProducts);
-    return res.status(200).json({ products: featuredProducts });
+    const featuredProducts = await Product.find(
+      { isFeatured: true },
+      { name: 1, price: 1, imgUrl: 1 }
+    ).exec();
+    return res.status(200).json(featuredProducts);
   } catch (error) {
     console.log(error);
   }
