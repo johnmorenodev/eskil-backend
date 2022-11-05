@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const CategoriesSchema = Schema({
   categoryName: { type: String, required: true },
   imageUrl: { type: String, required: true },
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 });
 
 module.exports = mongoose.model('Category', CategoriesSchema);
