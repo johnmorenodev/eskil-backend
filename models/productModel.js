@@ -6,9 +6,10 @@ const ProductSchema = Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   imgUrl: { type: String, required: true },
-  isFeatured: { type: Boolean },
+  isFeatured: { type: Boolean, default: false },
   shortDescription: { type: String, required: true },
   longDescription: { type: String, required: true },
+  categories: [{ type: mongoose.Schema.Types.ObjectId, default: '12345' }],
   details: {
     variant: String,
     baseColor: String,
