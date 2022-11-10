@@ -14,7 +14,20 @@ exports.postCategories = async (req, res) => {
   try {
     const category = new Category({ categoryName, imageUrl, products });
     await category.save();
-    res.status(201).json({ category: category });
+    return res.status(201).json({ category: category });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getCategoryProducts = async (req, res) => {
+  const { categoryId } = req.params;
+
+  try {
+    const categoryProducts = await Category.findById(categoryId)
+      .populate('products')
+      .exec();
+    return res.status(200).json(categoryProducts);
   } catch (error) {
     console.log(error);
   }
