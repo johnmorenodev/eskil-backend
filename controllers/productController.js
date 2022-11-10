@@ -6,17 +6,25 @@ exports.getProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(productId).exec();
     const categoryId = product.categories[0];
+
     const relatedProducts = await Category.findById(categoryId, {
       products: 1,
-    }).populate({
-      path: 'products',
-      match: { _id: { $ne: product._id } },
-      options: { limit: 3 },
-      select: 'name price imgUrl',
-    });
+    })
+      .populate({
+        path: 'products',
+        select: 'name price imgUrl',
+        match: { _id: { $ne: product._id } },
+      })
+      .exec();
+    const filtered = [...relatedProducts.products];
+    while (filtered.length > 3) {
+      filtered.pop();
+    }
+
+    console.log(relatedProducts);
     return res
       .status(200)
-      .json({ product: product, relatedProducts: relatedProducts });
+      .json({ product: product, relatedProducts: filtered });
   } catch (error) {
     console.log(error);
   }

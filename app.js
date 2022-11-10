@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const indexRoutes = require('./routes/indexRoutes');
 const productRoutes = require('./routes/productsRoutes');
+const categoryRoutes = require('./routes/categoriesRoutes');
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 
 app.use(indexRoutes);
 app.use(productRoutes);
+app.use(categoryRoutes);
 
 mongoose
   .connect(process.env.DB_URL)
