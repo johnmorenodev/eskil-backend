@@ -9,7 +9,9 @@ const ProductSchema = Schema({
   isFeatured: { type: Boolean, default: false },
   shortDescription: { type: String, required: true },
   longDescription: { type: String, required: true },
-  categories: [{ type: mongoose.Schema.Types.ObjectId, default: '12345' }],
+  categories: [
+    { type: mongoose.Schema.Types.ObjectId, default: '12345', ref: 'Category' },
+  ],
   details: {
     variant: String,
     baseColor: String,
