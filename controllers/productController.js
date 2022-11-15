@@ -21,7 +21,6 @@ exports.getProduct = async (req, res, next) => {
       filtered.pop();
     }
 
-    console.log(relatedProducts);
     return res
       .status(200)
       .json({ product: product, relatedProducts: filtered });
@@ -85,7 +84,7 @@ exports.updateProduct = async (req, res) => {
       { _id: categories[0] },
       { $push: { products: id } }
     );
-    console.log(categories[0]);
+
     res.status(201).json(result);
   } catch (error) {
     console.log(error);
