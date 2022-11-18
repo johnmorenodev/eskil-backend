@@ -1,7 +1,8 @@
 const Product = require('../models/productModel');
 const Category = require('../models/categories');
 
-exports.getProduct = async (req, res, next) => {
+//GET PRODUCTS ON PRODUCT PAGE
+exports.getProductById = async (req, res, next) => {
   const { productId } = req.params;
   try {
     const product = await Product.findById(productId).exec();
@@ -29,6 +30,7 @@ exports.getProduct = async (req, res, next) => {
   }
 };
 
+//ADD PRODUCTS
 exports.postProduct = async (req, res, next) => {
   const {
     name,
@@ -66,12 +68,13 @@ exports.postProduct = async (req, res, next) => {
     });
 
     await Category.bulkWrite(operation);
-    res.status(201).json(product);
+    return res.status(201).json(product);
   } catch (error) {
     console.log(error);
   }
 };
 
+//UPDATE PRODUCT
 exports.updateProduct = async (req, res) => {
   const { id, categories } = req.body;
   try {
@@ -85,8 +88,21 @@ exports.updateProduct = async (req, res) => {
       { $push: { products: id } }
     );
 
-    res.status(201).json(result);
+    return res.status(201).json(result);
   } catch (error) {
     console.log(error);
+  }
+};
+
+//GET FEATURED PRODUCTS ON HOME PAGE
+exports.getFeaturedProducts = async (req, res) => {
+  try {
+    const featuredProducts = await Product.find(
+      { isFeatured: true },
+      { name: 1, price: 1, imgUrl: 1 }
+    ).exec();
+    return res.status(200).json(featuredProducts);
+  } catch (error) {
+    return console.log(error);
   }
 };
