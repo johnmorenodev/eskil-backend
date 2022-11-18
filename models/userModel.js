@@ -4,8 +4,9 @@ const uniqueValidator = require('mongoose-unique-validator');
 const Schema = mongoose.Schema;
 
 const CartItemsSchema = Schema({
-  id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
   quantity: { type: Number, default: 1 },
+  subtotal: { type: Number },
 });
 
 const OrderItemsSchema = Schema([
@@ -22,6 +23,7 @@ const UserSchema = Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   cart: [CartItemsSchema],
+  total: { type: Number },
   orders: [OrderItemsSchema],
 });
 

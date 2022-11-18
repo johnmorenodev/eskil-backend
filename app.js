@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
-const indexRoutes = require('./routes/indexRoutes');
 const productRoutes = require('./routes/productsRoutes');
 const categoryRoutes = require('./routes/categoriesRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,7 +23,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(indexRoutes);
 app.use(productRoutes);
 app.use(categoryRoutes);
 app.use(userRoutes);
