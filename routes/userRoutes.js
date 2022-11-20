@@ -22,6 +22,6 @@ router.use(checkAuth);
 router.get('/user-data/:userId', userController.getUserData);
 router.post('/addToCart/:productId', userController.postAddToCart);
 router.patch('/changeQuantity/:productId', userController.patchChangeQuantity);
-router.post('/removeProduct/:productId', userController.deleteRemoveProduct);
+router.delete('/removeProduct/:productId', userController.deleteRemoveProduct);
 
 module.exports = router;
