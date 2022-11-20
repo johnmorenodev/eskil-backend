@@ -7,9 +7,18 @@ require('dotenv').config();
 const productRoutes = require('./routes/productsRoutes');
 const categoryRoutes = require('./routes/categoriesRoutes');
 const userRoutes = require('./routes/userRoutes');
+const stripeRoutes = require('./routes/stripeRoutes');
 
-app.use(express.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(express.json());
+
+app.use((req, res, next) => {
+  if (req.originalUrl === '/webhook') {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
@@ -26,6 +35,7 @@ app.use((req, res, next) => {
 app.use(productRoutes);
 app.use(categoryRoutes);
 app.use(userRoutes);
+app.use(stripeRoutes);
 
 mongoose
   .connect(process.env.DB_URL)

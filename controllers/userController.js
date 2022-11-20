@@ -143,9 +143,10 @@ exports.patchChangeQuantity = async (req, res) => {
     product.subtotal = product.quantity * productPrice.price;
     user.total = user.cart.reduce((acc, user) => acc + user.subtotal, 0);
     await user.save();
-    res.status(201).json({ message: 'Success' });
+
+    return res.status(201).json({ message: 'Success' });
   } catch (error) {
-    res.status(400).json({ message: 'Adding quantity failed.' });
+    return res.status(400).json({ message: 'Adding quantity failed.' });
   }
 };
 
@@ -163,8 +164,8 @@ exports.deleteRemoveProduct = async (req, res) => {
     user.cart = newCart;
     user.total = user.cart.reduce((acc, user) => acc + user.subtotal, 0);
     await user.save();
-    res.status(201).json({ message: 'Success' });
+    return res.status(201).json({ message: 'Success' });
   } catch (error) {
-    res.status(400).json({ message: 'Failed' });
+    return res.status(400).json({ message: 'Failed' });
   }
 };

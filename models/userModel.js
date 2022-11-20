@@ -9,14 +9,17 @@ const CartItemsSchema = Schema({
   subtotal: { type: Number },
 });
 
-const OrderItemsSchema = Schema([
-  {
-    id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-    quantity: { type: Number },
-    totalPrice: { type: Number },
-    purchaseDate: { type: Date, default: new Date() },
-  },
-]);
+const OrderItemsSchema = Schema({
+  products: [
+    {
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+      quantity: { type: Number },
+    },
+  ],
+
+  totalPrice: { type: Number },
+  purchaseDate: { type: Date, default: new Date() },
+});
 
 const UserSchema = Schema({
   name: { type: String, required: true },
