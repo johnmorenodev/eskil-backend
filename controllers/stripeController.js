@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const endpointSecret = process.env.WEBHOOK;
 
 exports.postCheckout = async (req, res) => {
+  console.log('test');
   const userId = req.userData.userId;
 
   try {
@@ -36,7 +37,6 @@ exports.postCheckout = async (req, res) => {
       success_url: process.env.FRONT_END_URL,
       cancel_url: process.env.FRONT_END_URL + '/my-account',
     });
-
     return res.json({ url: session.url });
   } catch (error) {
     return res.status(400).json({ message: 'Failed' });
