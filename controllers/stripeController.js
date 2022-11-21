@@ -35,7 +35,7 @@ exports.postCheckout = async (req, res) => {
       mode: 'payment',
       client_reference_id: userId,
       success_url: process.env.FRONT_END_URL,
-      cancel_url: process.env.FRONT_END_URL + '/my-account',
+      cancel_url: process.env.FRONT_END_URL + 'my-account',
     });
     return res.json({ url: session.url });
   } catch (error) {
