@@ -33,8 +33,8 @@ exports.postCheckout = async (req, res) => {
       line_items: newCart,
       mode: 'payment',
       client_reference_id: userId,
-      success_url: `http://localhost:5000/`,
-      cancel_url: `http://localhost:5000/my-account/`,
+      success_url: process.env.FRONT_END_URL,
+      cancel_url: process.env.FRONT_END_URL + '/my-account',
     });
 
     return res.json({ url: session.url });
