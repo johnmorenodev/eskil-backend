@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE);
 const User = require('../models/userModel');
 const bodyParser = require('body-parser');
 
-const endpointSecret = 'whsec_fqY3Bt7wV2vl8IrM1EGcRm02OzF24cFH';
+const endpointSecret = process.env.WEBHOOK;
 
 exports.postCheckout = async (req, res) => {
   const userId = req.userData.userId;
