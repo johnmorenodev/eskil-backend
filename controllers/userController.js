@@ -37,7 +37,7 @@ exports.postCreateUser = async (req, res, next) => {
       token: token,
     });
   } catch (error) {
-    console.log(error);
+    return res.status(401).json({ message: 'Failed to create user.' });
   }
 };
 
@@ -48,7 +48,7 @@ exports.postUserLogin = async (req, res) => {
     const user = await User.findOne({ email: email }).exec();
 
     if (!user) {
-      return console.log('user does not exist');
+      return res.status(401).json({ message: 'User does not exist.' });
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -65,7 +65,7 @@ exports.postUserLogin = async (req, res) => {
       return console.log('wrong password');
     }
   } catch (error) {
-    console.log(error);
+    return res.status(401).json({ message: 'Failed to log in user.' });
   }
 };
 
@@ -75,12 +75,11 @@ exports.getUserData = async (req, res) => {
   try {
     const user = await User.findOne(
       { _id: userId },
-      { name: 1, cart: 1, orders: 1 }
+      { name: 1, cart: 1, orders: 1, total: 1 }
     )
       .populate({ path: 'cart.productId', select: 'imgUrl name price' })
       .exec();
-
-    return res.status(200).json({ user });
+    return res.status(200).json(user);
   } catch (error) {
     return console.log(error);
   }
@@ -103,25 +102,37 @@ exports.postAddToCart = async (req, res) => {
         quantity: existingProduct.quantity + quantity,
       };
 
+      const subtotal = newProduct.quantity * productPrice.price;
+
       newProduct = {
         ...newProduct,
-        subtotal: newProduct.quantity * productPrice.price,
+        subtotal: +subtotal.toFixed(2),
       };
       updatedCart = user.cart;
       updatedCart.splice(productIndex, 1, newProduct);
       user.cart = updatedCart;
 
-      user.total = user.cart.reduce((acc, user) => acc + user.subtotal, 0);
+      const userTotal = user.cart.reduce(
+        (acc, user) => acc + +user.subtotal.toFixed(2),
+        0
+      );
+      user.total = +userTotal.toFixed(2);
       await user.save();
       return res.status(201).json({ cart: user.cart });
     }
 
+    const subTotal = productPrice.price * quantity;
+
     updatedCart = [
       ...user.cart,
-      { quantity, productId, subtotal: productPrice.price * quantity },
+      { quantity, productId, subtotal: +subTotal.toFixed(2) },
     ];
     user.cart = updatedCart;
-    user.total = user.cart.reduce((acc, user) => acc + user.subtotal, 0);
+    const userTotal = user.cart.reduce(
+      (acc, user) => acc + +user.subtotal.toFixed(2),
+      0
+    );
+    user.total = +userTotal.toFixed(2);
     await user.save();
     return res.status(201).json({ message: 'Success' });
   } catch (error) {
@@ -140,8 +151,14 @@ exports.patchChangeQuantity = async (req, res) => {
     const product = user.cart.find(product => product.productId == productId);
     const productPrice = await Product.findById(productId, { price: 1 });
     product.quantity = quantity;
-    product.subtotal = product.quantity * productPrice.price;
-    user.total = user.cart.reduce((acc, user) => acc + user.subtotal, 0);
+    const productSubtotal = product.quantity * productPrice.price;
+    product.subtotal = +productSubtotal.toFixed(2);
+
+    const userTotal = user.cart.reduce(
+      (acc, user) => acc + +user.subtotal.toFixed(2),
+      0
+    );
+    user.total = +userTotal.toFixed(2);
     await user.save();
 
     return res.status(201).json({ message: 'Success' });
@@ -160,11 +177,43 @@ exports.deleteRemoveProduct = async (req, res) => {
     const newCart = currentCart.filter(
       product => product.productId._id != productId
     );
-    console.log(newCart);
+
     user.cart = newCart;
-    user.total = user.cart.reduce((acc, user) => acc + user.subtotal, 0);
+    const userTotal = user.cart.reduce(
+      (acc, user) => acc + +user.subtotal.toFixed(2),
+      0
+    );
+    user.total = +userTotal.toFixed(2);
     await user.save();
     return res.status(201).json({ message: 'Success' });
+  } catch (error) {
+    return res.status(400).json({ message: 'Failed' });
+  }
+};
+
+exports.getOrders = async (req, res) => {
+  const userId = req.userData.userId;
+
+  try {
+    const user = await User.findById(userId, { orders: 1 });
+
+    return res.status(200).json({ message: 'Success' });
+  } catch (error) {
+    return res.status(400).json({ message: 'Failed' });
+  }
+};
+
+exports.getOrderDetails = async (req, res) => {
+  const userId = req.userData.userId;
+  const orderId = req.params.orderId;
+
+  try {
+    const user = await User.findById(userId, { orders: 1, _id: 0 }).populate(
+      'orders.products.productId'
+    );
+    const order = user.orders.find(order => order._id == orderId);
+    console.log(order);
+    return res.status(200).json(order);
   } catch (error) {
     return res.status(400).json({ message: 'Failed' });
   }

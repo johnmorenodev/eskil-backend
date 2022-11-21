@@ -26,7 +26,7 @@ exports.getProductById = async (req, res, next) => {
       .status(200)
       .json({ product: product, relatedProducts: filtered });
   } catch (error) {
-    console.log(error);
+    return res.status(400).json({ message: 'Failed to get products.' });
   }
 };
 
@@ -70,7 +70,7 @@ exports.postProduct = async (req, res, next) => {
     await Category.bulkWrite(operation);
     return res.status(201).json(product);
   } catch (error) {
-    console.log(error);
+    return res.status(400).json({ message: 'Failed to add product.' });
   }
 };
 
@@ -90,7 +90,7 @@ exports.updateProduct = async (req, res) => {
 
     return res.status(201).json(result);
   } catch (error) {
-    console.log(error);
+    return res.status(400).json({ message: 'Failed to update product.' });
   }
 };
 
@@ -103,6 +103,6 @@ exports.getFeaturedProducts = async (req, res) => {
     ).exec();
     return res.status(200).json(featuredProducts);
   } catch (error) {
-    return console.log(error);
+    return res.status(400).json({ message: 'Failed to get featured product.' });
   }
 };
