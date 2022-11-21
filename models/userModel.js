@@ -14,6 +14,7 @@ const OrderItemsSchema = Schema({
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
       quantity: { type: Number },
+      subtotal: { type: Number },
     },
   ],
 

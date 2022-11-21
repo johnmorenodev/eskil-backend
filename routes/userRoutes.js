@@ -23,5 +23,6 @@ router.get('/user-data/:userId', userController.getUserData);
 router.post('/addToCart/:productId', userController.postAddToCart);
 router.patch('/changeQuantity/:productId', userController.patchChangeQuantity);
 router.delete('/removeProduct/:productId', userController.deleteRemoveProduct);
+router.get('/order-details/:orderId', userController.getOrderDetails);
 
 module.exports = router;

@@ -1,10 +1,8 @@
-const stripe = require('stripe')(
-  'sk_test_51M5gcnF7RtSquZbSU08n1nLZwgLhMae2oYwEuZgDd1Q69938XDyg8trVekZCwSqvfFSFUJN3Jdgn3W7hs5sROZVe00tYq6yjSN'
-);
+const stripe = require('stripe')(process.env.STRIPE);
 const User = require('../models/userModel');
 const bodyParser = require('body-parser');
 
-const endpointSecret = 'whsec_gRbd297d5CEmkMm0KjRbvRi03nzDKR5N';
+const endpointSecret = 'whsec_fqY3Bt7wV2vl8IrM1EGcRm02OzF24cFH';
 
 exports.postCheckout = async (req, res) => {
   const userId = req.userData.userId;
@@ -67,20 +65,19 @@ exports.postWebhook = async (request, response) => {
       );
 
       const customer = sessionWithLineItems.client_reference_id;
-      console.log(sessionWithLineItems.line_items);
 
       if (session.payment_status === 'paid') {
         const user = await User.findById(customer);
 
         const userCart = [...user.cart];
-        const userTotal = user.total;
-        console.log(userTotal);
-        user.orders.push({ products: [...userCart], totalPrice: +userTotal });
+        const userTotal = +user.total.toFixed(2);
+        user.orders.unshift({
+          products: [...userCart],
+          totalPrice: +userTotal.toFixed(2),
+        });
         user.cart = [];
+        user.total = 0;
         await user.save();
-        console.log(user);
-        // fulfillOrder(session.line_items);
-        // fulfillOrder(session);
       }
 
       break;
