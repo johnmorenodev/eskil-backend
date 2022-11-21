@@ -9,8 +9,6 @@ const categoryRoutes = require('./routes/categoriesRoutes');
 const userRoutes = require('./routes/userRoutes');
 const stripeRoutes = require('./routes/stripeRoutes');
 
-// app.use(express.json());
-
 app.use((req, res, next) => {
   if (req.originalUrl === '/webhook') {
     next();
