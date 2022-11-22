@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
-const { validationResult, body } = require('express-validator');
+const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
@@ -19,7 +19,7 @@ exports.postCreateUser = async (req, res, next) => {
 
     const existingEmail = await User.findOne({ email: email }).exec();
     if (existingEmail) {
-      throw new Error();
+      return res.status(401).json({ message: 'Email already exist' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -62,7 +62,7 @@ exports.postUserLogin = async (req, res) => {
     }
 
     if (!match) {
-      return console.log('wrong password');
+      return res.status(401).json({ message: 'Wrong Password' });
     }
   } catch (error) {
     return res.status(401).json({ message: 'Failed to log in user.' });
@@ -212,7 +212,6 @@ exports.getOrderDetails = async (req, res) => {
       'orders.products.productId'
     );
     const order = user.orders.find(order => order._id == orderId);
-    console.log(order);
     return res.status(200).json(order);
   } catch (error) {
     return res.status(400).json({ message: 'Failed' });
