@@ -41,7 +41,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.listen(process.env.PORT || 4000, () => {
-  console.log("Server is running");
+  console.log("Server is running on port 4000");
 });
 
 module.exports = app;
